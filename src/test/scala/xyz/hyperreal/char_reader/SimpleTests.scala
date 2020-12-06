@@ -46,140 +46,172 @@ class SimpleTests extends AnyFreeSpec with Matchers {
         |""".trim.replace("!\n", "\n").stripMargin
   }
 
-//  "char, nl" in {
-//    indent("1\n") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1
-//        |^
-//        |
-//        |'\n' (line 1, column 2):
-//        |1
-//        | ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, space, nl" in {
-//    indent("1 \n") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1 !
-//        |^
-//        |
-//        |' ' (line 1, column 2):
-//        |1 !
-//        | ^
-//        |
-//        |'\n' (line 1, column 3):
-//        |1 !
-//        |  ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, nl, space" in {
-//    indent("1\n ") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1
-//        |^
-//        |
-//        |'\n' (line 1, column 2):
-//        |1
-//        | ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, nl, space (noindent)" in {
-//    noindent("1\n ") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1
-//        |^
-//        |
-//        |'\n' (line 1, column 2):
-//        |1
-//        | ^
-//        |
-//        |' ' (line 2, column 1):
-//        | !
-//        |^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, space, nl, space" in {
-//    indent("1 \n ") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1 !
-//        |^
-//        |
-//        |' ' (line 1, column 2):
-//        |1 !
-//        | ^
-//        |
-//        |'\n' (line 1, column 3):
-//        |1 !
-//        |  ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, space, nl, space (noindent)" in {
-//    noindent("1 \n ") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1 !
-//        |^
-//        |
-//        |' ' (line 1, column 2):
-//        |1 !
-//        | ^
-//        |
-//        |'\n' (line 1, column 3):
-//        |1 !
-//        |  ^
-//        |
-//        |' ' (line 2, column 1):
-//        | !
-//        |^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, nl, space, nl, space" in {
-//    indent("1\n \n") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1
-//        |^
-//        |
-//        |'\n' (line 1, column 2):
-//        |1
-//        | ^
-//        |
-//        |'\n' (line 2, column 2):
-//        | !
-//        | ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
-//
-//  "char, nl, space, nl, space (noindent)" in {
-//    noindent("1\n \n") shouldBe
-//      """
-//        |'1' (line 1, column 1):
-//        |1
-//        |^
-//        |
-//        |'\n' (line 1, column 2):
-//        |1
-//        | ^
-//        |
-//        |' ' (line 2, column 1):
-//        | !
-//        |^
-//        |
-//        |'\n' (line 2, column 2):
-//        | !
-//        | ^
-//        |""".trim.replace("!\n", "\n").stripMargin
-//  }
+  "char, nl" in {
+    indent("1\n") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |'EOI' (line 2, column 1):
+        |
+        |^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, space, nl" in {
+    indent("1 \n") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1 !
+        |^
+        |
+        |' ' (line 1, column 2):
+        |1 !
+        | ^
+        |
+        |'\n' (line 1, column 3):
+        |1 !
+        |  ^
+        |
+        |'EOI' (line 2, column 1):
+        |
+        |^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, nl, space" in {
+    indent("1\n ") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |'EOI' (line 2, column 2):
+        | !
+        | ^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, nl, space (noindent)" in {
+    noindent("1\n ") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |' ' (line 2, column 1):
+        | !
+        |^
+        |
+        |'EOI' (line 2, column 2):
+        | !
+        | ^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, space, nl, space" in {
+    indent("1 \n ") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1 !
+        |^
+        |
+        |' ' (line 1, column 2):
+        |1 !
+        | ^
+        |
+        |'\n' (line 1, column 3):
+        |1 !
+        |  ^
+        |
+        |'EOI' (line 2, column 2):
+        | !
+        | ^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, space, nl, space (noindent)" in {
+    noindent("1 \n ") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1 !
+        |^
+        |
+        |' ' (line 1, column 2):
+        |1 !
+        | ^
+        |
+        |'\n' (line 1, column 3):
+        |1 !
+        |  ^
+        |
+        |' ' (line 2, column 1):
+        | !
+        |^
+        |
+        |'EOI' (line 2, column 2):
+        | !
+        | ^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, nl, space, nl, space" in {
+    indent("1\n \n") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |'\n' (line 2, column 2):
+        | !
+        | ^
+        |
+        |'EOI' (line 3, column 1):
+        |
+        |^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
+  "char, nl, space, nl, space (noindent)" in {
+    noindent("1\n \n") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |' ' (line 2, column 1):
+        | !
+        |^
+        |
+        |'\n' (line 2, column 2):
+        | !
+        | ^
+        |
+        |'EOI' (line 3, column 1):
+        |
+        |^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
 
 }

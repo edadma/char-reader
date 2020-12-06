@@ -66,7 +66,8 @@ class CharReader private (val input: LazyList[Char],
       if (indentation.isDefined)
         skipSpace(input.tail) match {
           case Left((rest, count)) =>
-            if (rest.isEmpty) newLine(Seq.fill((indent * level - count) / indent)(DEDENT) ++: rest, count + 1)
+            if (rest.isEmpty && indent > 0)
+              newLine(Seq.fill((indent * level - count) / indent)(DEDENT) ++: rest, count + 1)
             else newLine(rest, count + 1)
           case Right((rest, count)) =>
             val cur = indent * level

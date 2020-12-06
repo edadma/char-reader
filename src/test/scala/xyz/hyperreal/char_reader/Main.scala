@@ -5,12 +5,13 @@ import Testing._
 object Main extends App {
 
   val s =
-//    "1\n a\n  b\n2"
-    """
-      |1
-      | 2
-      |""".trim.stripMargin
+    "1\n \n"
+//    """
+//      |1
+//      |  2
+//      |    3
+//      |""".trim.stripMargin
 
-  println(indent(s))
+  println(noindent(s))
 
 }
