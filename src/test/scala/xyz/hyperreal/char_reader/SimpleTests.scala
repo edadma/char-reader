@@ -213,4 +213,29 @@ class SimpleTests extends AnyFreeSpec with Matchers with Testing {
         |""".trim.replace("!\n", "\n").stripMargin
   }
 
+  "char, nl, char, nl" in {
+    indent("1\n2\n") shouldBe
+      """
+        |'1' (line 1, column 1):
+        |1
+        |^
+        |
+        |'\n' (line 1, column 2):
+        |1
+        | ^
+        |
+        |'2' (line 2, column 1):
+        |2
+        |^
+        |
+        |'\n' (line 2, column 2):
+        |2
+        | ^
+        |
+        |'EOI' (line 3, column 1):
+        |
+        |^
+        |""".trim.replace("!\n", "\n").stripMargin
+  }
+
 }

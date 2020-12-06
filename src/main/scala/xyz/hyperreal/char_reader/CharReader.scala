@@ -90,9 +90,7 @@ class CharReader private (input: LazyList[Char],
               newLine(Seq.fill((level - count) / indent)(DEDENT) ++: rest, count + 1, indent, 0)
             else newLine(rest, count + 1)
           case Right((rest, count)) =>
-            if (level == 0)
-              newLine(INDENT +: rest, count + 1, count, count)
-            else if (count % indent != 0 || count > level + indent)
+            if (indent > 0 && (count % indent != 0 || count > level + indent))
               newLine(rest, count + 1)
                 .error(s"expected indentation to be ${if (count > level) level + indent
                 else level - indent} spaces, not $count spaces")
@@ -104,7 +102,7 @@ class CharReader private (input: LazyList[Char],
                   Seq.fill((level - count) / indent)(DEDENT) ++: rest
                 } else rest
 
-              newLine(in, count + 1, indent, count)
+              newLine(in, count + 1, if (level == 0) count else indent, count)
             }
         } else newLine(input.tail)
     else if (indentation.isDefined && input.tail.isEmpty && level > 0)
