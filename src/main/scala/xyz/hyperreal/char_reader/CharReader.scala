@@ -39,6 +39,18 @@ class CharReader private (input: LazyList[Char],
 
   def sol: Boolean = soi || prev.get == '\n' || prev.get == INDENT || prev.get == DEDENT
 
+  def substring(end: CharReader): String = {
+    val buf = new StringBuilder
+    var r: CharReader = this
+
+    while (r ne end) {
+      buf += r.ch
+      r = r.next
+    }
+
+    buf.toString
+  }
+
   @scala.annotation.tailrec
   private def matches(in: Input, s: String, idx: Int = 0): Boolean =
     if (s.isEmpty) false
