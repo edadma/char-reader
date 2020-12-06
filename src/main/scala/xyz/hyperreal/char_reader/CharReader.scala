@@ -1,9 +1,5 @@
 package xyz.hyperreal.char_reader
 
-import java.io.{FileInputStream, InputStream}
-
-import scala.collection.mutable.ListBuffer
-
 object CharReader {
   val EOI = '\u001A'
   val INDENT = '\uE000'
@@ -18,7 +14,7 @@ class CharReader private (input: LazyList[Char],
                           line: Int,
                           col: Int,
                           tabs: Int,
-                          prev: Option[Char],
+                          val prev: Option[Char],
                           indentation: Option[(String, String, String)],
                           indent: Int,
                           level: Int,
