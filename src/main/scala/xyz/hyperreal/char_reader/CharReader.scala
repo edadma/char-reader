@@ -73,7 +73,7 @@ class CharReader private (input: LazyList[Char],
       Left(r, c + count)
     } else Right(in, count)
 
-  def next: CharReader =
+  lazy val next: CharReader =
     if (ch == EOI)
       error("end of input")
     else if (soi && ch == ' ') {
