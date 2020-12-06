@@ -41,23 +41,25 @@ class CharReader private (val input: LazyList[Char],
 
   @scala.annotation.tailrec
   private def matches(in: Input, s: String, idx: Int = 0): Boolean =
-    if (s.isEmpty)
-      false
-    else if (idx == s.length)
-      true
-    else if (in.isEmpty || in.head != s.charAt(idx))
-      false
-    else
-      matches(in.tail, s, idx + 1)
+    if (s.isEmpty) false
+    else if (idx == s.length) true
+    else if (in.isEmpty || in.head != s.charAt(idx)) false
+    else matches(in.tail, s, idx + 1)
+
+  @scala.annotation.tailrec
+  private def skipToEol(in: Input, count: Int = 0): (Input, Int) =
+    if (in.isEmpty || in.head == '\n') (in, count)
+    else skipToEol(in.tail, count + 1)
 
   @scala.annotation.tailrec
   private def skipSpace(in: Input, count: Int = 0): Either[(Input, Int), (Input, Int)] =
-    if (in.isEmpty || in.head == '\n')
-      Left(in, count)
-    else if (in.head == ' ')
-      skipSpace(in.tail, count + 1)
-    else
-      Right(in, count)
+    if (in.isEmpty || in.head == '\n') Left(in, count)
+    else if (in.head == ' ') skipSpace(in.tail, count + 1)
+    else if (matches(in, indentation.get._1)) {
+      val (r, c) = skipToEol(in)
+
+      Left(r, c + count)
+    } else Right(in, count)
 
   def next: CharReader =
     if (ch == EOI)
