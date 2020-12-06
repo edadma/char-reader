@@ -13,13 +13,13 @@ object CharReader {
     new CharReader(s to LazyList, tabs, indentation)
 }
 
-class CharReader private (val input: LazyList[Char],
+class CharReader private (input: LazyList[Char],
                           start: LazyList[Char],
-                          val line: Int,
-                          val col: Int,
-                          val tabs: Int,
-                          val prev: Option[Char],
-                          val indentation: Option[(String, String, String)],
+                          line: Int,
+                          col: Int,
+                          tabs: Int,
+                          prev: Option[Char],
+                          indentation: Option[(String, String, String)],
                           indent: Int,
                           level: Int,
                           private var _textUntilDedent: Boolean) {
@@ -28,18 +28,20 @@ class CharReader private (val input: LazyList[Char],
 
   private type Input = LazyList[Char]
 
-  def this(chars: LazyList[Char], tabs: Int, indentation: Option[(String, String, String)]) =
-    this(chars, chars, 1, 1, tabs, None, indentation, 0, 0, false)
+  def this(in: LazyList[Char], tabs: Int, indentation: Option[(String, String, String)]) =
+    this(in, in, 1, 1, tabs, None, indentation, 0, 0, false)
 
   def textUntilDedent(): Unit = _textUntilDedent = true
 
-  def some: Boolean = input.nonEmpty
+  def more: Boolean = input.nonEmpty
 
-  def none: Boolean = input.isEmpty
+  def eoi: Boolean = input.isEmpty
 
-  def ch: Char = if (some) input.head else EOI
+  def ch: Char = if (more) input.head else EOI
 
-  def sol: Boolean = prev.isEmpty || prev.get == '\n' || prev.get == INDENT || prev.get == DEDENT
+  def soi: Boolean = prev.isEmpty
+
+  def sol: Boolean = soi || prev.get == '\n' || prev.get == INDENT || prev.get == DEDENT
 
   @scala.annotation.tailrec
   private def matches(in: Input, s: String, idx: Int = 0): Boolean =
@@ -66,12 +68,18 @@ class CharReader private (val input: LazyList[Char],
   def next: CharReader =
     if (ch == EOI)
       error("end of input")
-    else if (ch == '\n')
+    else if (soi && ch == ' ') {
+      skipSpace(input) match {
+        case Left((rest, count)) => newLine(rest, count + 1)
+        case Right((rest, count)) =>
+          new CharReader(INDENT +: rest, input, 1, count + 1, tabs, None, indentation, count, count, false)
+      }
+    } else if (ch == '\n')
       if (indentation.isDefined)
         skipSpace(input.tail) match {
           case Left((rest, count)) =>
             if (rest.isEmpty && indent > 0)
-              newLine(Seq.fill((level - count) / indent)(DEDENT) ++: rest, count + 1)
+              newLine(Seq.fill((level - count) / indent)(DEDENT) ++: rest, count + 1, indent, 0)
             else newLine(rest, count + 1)
           case Right((rest, count)) =>
             if (level == 0)
@@ -91,11 +99,13 @@ class CharReader private (val input: LazyList[Char],
               newLine(in, count + 1, indent, count)
             }
         } else newLine(input.tail)
+    else if (indentation.isDefined && input.tail.isEmpty && level > 0)
+      nextChar(LazyList.fill(level / indent)(DEDENT), 0)
     else
-      nextChar
+      nextChar(input.tail)
 
-  private def nextChar: CharReader =
-    new CharReader(input.tail,
+  private def nextChar(in: Input, _level: Int = level): CharReader =
+    new CharReader(in,
                    start,
                    line,
                    if (ch == INDENT || ch == DEDENT) col else col + 1,
@@ -103,7 +113,7 @@ class CharReader private (val input: LazyList[Char],
                    Some(ch),
                    indentation,
                    indent,
-                   level,
+                   _level,
                    _textUntilDedent)
 
   private def newLine(in: Input, _col: Int = 1, _indent: Int = indent, _level: Int = level): CharReader =
@@ -116,7 +126,7 @@ class CharReader private (val input: LazyList[Char],
 
       def hasNext: Boolean = !done
 
-      def next: CharReader = {
+      def next(): CharReader = {
         if (done)
           throw new NoSuchElementException("no more characters")
         else if (r eq null)

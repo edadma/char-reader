@@ -3,17 +3,14 @@ package xyz.hyperreal.char_reader
 object Main extends App with Testing {
 
   val s =
-    ""
+    " 1"
 //    """
 //      |1
-//      | a
-//      |  b
-//      | c
-//      |2
-//      | d
-//      |  e
+//      | 2
+//      | #asdf
+//      | 3
 //      |""".trim.stripMargin
 
-  println(text(s))
+  println(indent(s))
 
 }
