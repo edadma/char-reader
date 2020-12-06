@@ -1,6 +1,6 @@
 name := "char-reader"
 
-version := "0.1.0-snapshot.1"
+version := "0.1.0"
 
 scalaVersion := "2.13.4"
 
