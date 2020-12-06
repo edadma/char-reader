@@ -1,4 +1,4 @@
-package xyz.hyperreal.ncr
+package xyz.hyperreal.char_reader
 
 object Testing {
 

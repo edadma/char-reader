@@ -1,9 +1,9 @@
-package xyz.hyperreal.ncr
+package xyz.hyperreal.char_reader
 
 import org.scalatest._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import xyz.hyperreal.ncr.Testing._
+import xyz.hyperreal.char_reader.Testing._
 
 class SimpleTests extends AnyFreeSpec with Matchers {
 
