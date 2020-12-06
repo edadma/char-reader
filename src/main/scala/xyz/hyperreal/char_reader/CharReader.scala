@@ -22,7 +22,7 @@ class CharReader private (val input: LazyList[Char],
                           val indentation: Option[(String, String, String)],
                           indent: Int,
                           level: Int,
-                          var textUntilDedent: Boolean) {
+                          private var _textUntilDedent: Boolean) {
 
   import CharReader.{EOI, INDENT, DEDENT}
 
@@ -30,6 +30,8 @@ class CharReader private (val input: LazyList[Char],
 
   def this(chars: LazyList[Char], tabs: Int, indentation: Option[(String, String, String)]) =
     this(chars, chars, 1, 1, tabs, None, indentation, 0, 0, false)
+
+  def textUntilDedent(): Unit = _textUntilDedent = true
 
   def some: Boolean = input.nonEmpty
 
@@ -54,8 +56,8 @@ class CharReader private (val input: LazyList[Char],
   @scala.annotation.tailrec
   private def skipSpace(in: Input, count: Int = 0): Either[(Input, Int), (Input, Int)] =
     if (in.isEmpty || in.head == '\n') Left(in, count)
-    else if (in.head == ' ') skipSpace(in.tail, count + 1)
-    else if (matches(in, indentation.get._1)) {
+    else if (in.head == ' ' && (!_textUntilDedent || count < level)) skipSpace(in.tail, count + 1)
+    else if (!_textUntilDedent && matches(in, indentation.get._1)) {
       val (r, c) = skipToEol(in)
 
       Left(r, c + count)
@@ -69,23 +71,24 @@ class CharReader private (val input: LazyList[Char],
         skipSpace(input.tail) match {
           case Left((rest, count)) =>
             if (rest.isEmpty && indent > 0)
-              newLine(Seq.fill((indent * level - count) / indent)(DEDENT) ++: rest, count + 1)
+              newLine(Seq.fill((level - count) / indent)(DEDENT) ++: rest, count + 1)
             else newLine(rest, count + 1)
           case Right((rest, count)) =>
-            val cur = indent * level
-
             if (level == 0)
-              newLine(INDENT +: rest, count + 1, count, 1)
-            else if (count % indent != 0 || count > cur + indent)
+              newLine(INDENT +: rest, count + 1, count, count)
+            else if (count % indent != 0 || count > level + indent)
               newLine(rest, count + 1)
-                .error(s"expected indentation to be ${if (count > cur) cur + indent
-                else cur - indent} spaces, not $count spaces")
+                .error(s"expected indentation to be ${if (count > level) level + indent
+                else level - indent} spaces, not $count spaces")
             else {
               val in =
-                if (count > cur) INDENT +: rest
-                else Seq.fill((cur - count) / indent)(DEDENT) ++: rest
+                if (count > level) INDENT +: rest
+                else if (count < level) {
+                  _textUntilDedent = false
+                  Seq.fill((level - count) / indent)(DEDENT) ++: rest
+                } else rest
 
-              newLine(in, count + 1, indent, count / indent)
+              newLine(in, count + 1, indent, count)
             }
         } else newLine(input.tail)
     else
@@ -101,28 +104,32 @@ class CharReader private (val input: LazyList[Char],
                    indentation,
                    indent,
                    level,
-                   textUntilDedent)
+                   _textUntilDedent)
 
   private def newLine(in: Input, _col: Int = 1, _indent: Int = indent, _level: Int = level): CharReader =
-    new CharReader(in, input.tail, line + 1, _col, tabs, Some(ch), indentation, _indent, _level, textUntilDedent)
+    new CharReader(in, input.tail, line + 1, _col, tabs, Some(ch), indentation, _indent, _level, _textUntilDedent)
 
-  def toList: List[CharReader] = {
-    val buf = new ListBuffer[CharReader]
-    var r: CharReader = this
+  def iterator: Iterator[CharReader] =
+    new Iterator[CharReader] {
+      private var done = false
+      private var r: CharReader = _
 
-    @scala.annotation.tailrec
-    def list(): Unit = {
-      buf += r
+      def hasNext: Boolean = !done
 
-      if (r.ch != EOI) {
-        r = r.next
-        list()
+      def next: CharReader = {
+        if (done)
+          throw new NoSuchElementException("no more characters")
+        else if (r eq null)
+          r = CharReader.this
+        else
+          r = r.next
+
+        if (r.ch == EOI)
+          done = true
+
+        r
       }
     }
-
-    list()
-    buf.toList
-  }
 
   def lineString: String = {
     val buf = new StringBuilder

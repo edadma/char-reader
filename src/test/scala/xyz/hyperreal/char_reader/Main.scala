@@ -1,19 +1,19 @@
 package xyz.hyperreal.char_reader
 
-import Testing._
-
-object Main extends App {
+object Main extends App with Testing {
 
   val s =
-//    "1\n \n"
-    """
-      |1
-      |  #a
-      |  2
-      | #b
-      |  3
-      |""".trim.stripMargin
+    ""
+//    """
+//      |1
+//      | a
+//      |  b
+//      | c
+//      |2
+//      | d
+//      |  e
+//      |""".trim.stripMargin
 
-  println(indent(s))
+  println(text(s))
 
 }
