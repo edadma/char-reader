@@ -7,6 +7,9 @@ object CharReader {
 
   def fromString(s: String, tabs: Int = 4, indentation: Option[(String, String, String)] = None) =
     new CharReader(s to LazyList, tabs, indentation)
+
+  def fromFile(file: String, tabs: Int = 4, indentation: Option[(String, String, String)] = None): CharReader =
+    fromString(util.Using(io.Source.fromFile(file))(source => source.mkString).get, tabs, indentation)
 }
 
 class CharReader private (input: LazyList[Char],
