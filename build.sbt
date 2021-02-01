@@ -1,89 +1,51 @@
-name := "char-reader"
+ThisBuild / libraryDependencies ++=
+  Seq(
+    "com.lihaoyi" %%% "utest" % "0.7.7" % "test",
+  )
+ThisBuild / scalaVersion := "2.13.4"
+ThisBuild / scalacOptions ++=
+  Seq(
+    "-deprecation", "-feature", "-unchecked",
+    "-language:postfixOps", "-language:implicitConversions", "-language:existentials", "-language:dynamics",
+    "-Xasync"
+  )
 
-version := "0.1.5"
+lazy val root = project.in(file(".")).
+  aggregate(char_reader.js, char_reader.jvm/*, char_reader.native*/).
+  settings(
+    publish := {},
+    publishLocal := {},
+  )
 
-scalaVersion := "2.13.4"
-
-scalacOptions ++= Seq( "-deprecation", "-feature", "-unchecked", "-language:postfixOps", "-language:implicitConversions", "-language:existentials", "-language:dynamics" )
-
-organization := "xyz.hyperreal"
-
-Global / onChangedBuildSource := ReloadOnSourceChanges
-
-resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
-
-resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
-
-libraryDependencies ++= Seq(
-	"org.scalatest" %% "scalatest" % "3.1.1" % "test",
-	"org.scalacheck" %% "scalacheck" % "1.14.1" % "test"
-)
-
-libraryDependencies ++= Seq(
-//	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-//	"org.scala-lang.modules" %% "scala-xml" % "1.2.0"
-//	"org.scala-lang.modules" %% "scala-swing" % "2.1.1"
-)
-
-//libraryDependencies ++= Seq(
-//  "com.typesafe" % "config" % "1.3.4"
-//)
-
-//libraryDependencies ++= Seq(
-//  "jline" % "jline" % "2.14.6"
-//)
-
-libraryDependencies ++= {
-	val akkaV = "2.5.25"
-	Seq(
-//		"com.typesafe.akka" %% "akka-actor"    % akkaV
-//		"com.typesafe.akka" %% "akka-remote"   % akkaV,
-//		"com.typesafe.akka" %% "akka-testkit"  % akkaV    % "test",
-//		"org.specs2"        %% "specs2-core"   % "2.3.11" % "test"
-	)
-}
-
-//libraryDependencies ++= {
-//	val akka_http = "10.1.10"
-//	Seq(
-//		"com.typesafe.akka" %% "akka-http-core"       % akka_http,
-//		"com.typesafe.akka" %% "akka-http"            % akka_http,
-//		"com.typesafe.akka" %% "akka-http-testkit"    % akka_http,
-//		"com.typesafe.akka" %% "akka-http-spray-json" % akka_http,
-//		"com.typesafe.akka" %% "akka-http-jackson"    % akka_http
-//	)
-//}
-
-libraryDependencies ++= Seq(
-)
-
-coverageExcludedPackages := ".*Main"
-
-mainClass in (Compile, run) := Some( "xyz.hyperreal." + name.value.replace('-', '_') + ".Main" )
-
-mainClass in assembly := Some( "xyz.hyperreal." + name.value.replace('-', '_') + ".Main" )
-
-assemblyJarName in assembly := name.value + "-" + version.value + ".jar"
-
-publishMavenStyle := true
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { _ => false }
-
-licenses := Seq("ISC" -> url("https://opensource.org/licenses/ISC"))
-
-homepage := Some(url("https://github.com/edadma/" + name.value))
-
-pomExtra :=
-  <scm>
-    <url>git@github.com:edadma/{name.value}.git</url>
-    <connection>scm:git:git@github.com:edadma/{name.value}.git</connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>edadma</id>
-      <name>Edward A. Maxedon, Sr.</name>
-      <url>https://github.com/edadma</url>
-    </developer>
-  </developers>
+lazy val char_reader = crossProject(JSPlatform, JVMPlatform/*, NativePlatform*/).crossType(CrossType.Pure).in(file(".")).
+  settings(
+    name := "char-reader",
+    version := "0.1.6",
+    organization := "xyz.hyperreal",
+    mainClass := Some("xyz.hyperreal.char_reader.Main"),
+    testFrameworks += new TestFramework("utest.runner.Framework"),
+    publishMavenStyle := true,
+    publishArtifact in Test := false,
+    licenses := Seq("ISC" -> url("https://opensource.org/licenses/ISC"))
+  ).
+  jvmSettings(
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.0.0" % "provided",
+  ).
+  //  nativeSettings(
+  //    libraryDependencies ++=
+  //      Seq(
+  //        "com.lihaoyi" %%% "utest" % "0.7.7" % "test",
+  //      ),
+  //  ).
+  jsSettings(
+    jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
+    //    Test / scalaJSUseMainModuleInitializer := true,
+    //    Test / scalaJSUseTestModuleInitializer := false,
+    Test / scalaJSUseMainModuleInitializer := false,
+    Test / scalaJSUseTestModuleInitializer := true,
+    scalaJSUseMainModuleInitializer := true,
+    libraryDependencies ++=
+      Seq(
+        "com.lihaoyi" %%% "utest" % "0.7.7" % "test",
+      ),
+  )
