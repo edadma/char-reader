@@ -2,25 +2,21 @@ package xyz.hyperreal.char_reader
 
 trait Testing {
 
-  def noindent(s: String): String =
-    CharReader.fromString(s, indentation = None).iterator map (r =>
-      r.longErrorText(s"'${r.ch match {
-        case CharReader.INDENT => "INDENT"
-        case CharReader.DEDENT => "DEDENT"
-        case CharReader.EOI    => "EOI"
-        case '\n'              => "\\n"
-        case c                 => c.toString
-      }}'")) mkString "\n"
+  def noindent(s: String): String = noindent(CharReader.fromString(s, indentation = None))
+
+  def noindent(r: CharReader): String = r.iterator map charline mkString "\n"
+
+  def charline(r: CharReader): String =
+    r.longErrorText(s"'${r.ch match {
+      case CharReader.INDENT => "INDENT"
+      case CharReader.DEDENT => "DEDENT"
+      case CharReader.EOI    => "EOI"
+      case '\n'              => "\\n"
+      case c                 => c.toString
+    }}'")
 
   def indent(s: String): String =
-    CharReader.fromString(s, indentation = Some(("#", "", ""))).iterator map (r =>
-      r.longErrorText(s"'${r.ch match {
-        case CharReader.INDENT => "INDENT"
-        case CharReader.DEDENT => "DEDENT"
-        case CharReader.EOI    => "EOI"
-        case '\n'              => "\\n"
-        case c                 => c.toString
-      }}'")) mkString "\n"
+    CharReader.fromString(s, indentation = Some(("#", "", ""))).iterator map charline mkString "\n"
 
   def text(s: String): String = {
     var first = false
@@ -31,13 +27,7 @@ trait Testing {
         first = true
       }
 
-      r.longErrorText(s"'${r.ch match {
-        case CharReader.INDENT => "INDENT"
-        case CharReader.DEDENT => "DEDENT"
-        case CharReader.EOI    => "EOI"
-        case '\n'              => "\\n"
-        case c                 => c.toString
-      }}'")
+      charline(r)
     } mkString "\n"
   }
 
