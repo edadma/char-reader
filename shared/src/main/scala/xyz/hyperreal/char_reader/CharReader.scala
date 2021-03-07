@@ -1,5 +1,7 @@
 package xyz.hyperreal.char_reader
 
+import xyz.hyperreal.cross_plateform.readFile
+
 object CharReader {
   val EOI = '\u001A'
   val INDENT = '\uE000'
