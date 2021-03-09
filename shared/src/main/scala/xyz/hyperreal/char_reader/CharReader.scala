@@ -1,6 +1,6 @@
 package xyz.hyperreal.char_reader
 
-import xyz.hyperreal.cross_plateform.readFile
+import xyz.hyperreal.cross_platform.readFile
 
 object CharReader {
   val EOI = '\u001A'

@@ -1,7 +1,7 @@
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "char-reader",
-    version := "0.1.11",
+    version := "0.1.12",
     scalaVersion := "2.13.5",
     scalacOptions ++=
       Seq(
@@ -12,7 +12,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(
     organization := "xyz.hyperreal",
     mainClass := Some("xyz.hyperreal.char_reader.Main"),
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.5" % "test",
-    libraryDependencies += "xyz.hyperreal" %%% "cross-platform" % "0.1.0-snapshot.2",
+    libraryDependencies += "xyz.hyperreal" %%% "cross-platform" % "0.1.0-snapshot.3",
     publishMavenStyle := true,
     publishArtifact in Test := false,
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
