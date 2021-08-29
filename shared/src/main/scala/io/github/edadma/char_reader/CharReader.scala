@@ -1,4 +1,4 @@
-package xyz.hyperreal.char_reader
+package io.github.edadma.char_reader
 
 import xyz.hyperreal.cross_platform.readFile
 

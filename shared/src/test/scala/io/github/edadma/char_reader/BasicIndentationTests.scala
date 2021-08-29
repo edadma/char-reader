@@ -1,4 +1,4 @@
-package xyz.hyperreal.char_reader
+package io.github.edadma.char_reader
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers

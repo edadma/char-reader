@@ -1,4 +1,4 @@
-package xyz.hyperreal.char_reader
+package io.github.edadma.char_reader
 
 object Main extends App with Testing {
 
