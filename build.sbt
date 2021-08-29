@@ -1,3 +1,4 @@
+ThisBuild / licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
 ThisBuild / versionScheme := Some("semver-spec")
 
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
@@ -11,21 +12,12 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(
         "-language:postfixOps", "-language:implicitConversions", "-language:existentials", "-language:dynamics",
         "-Xasync"
       ),
-    organization := "xyz.hyperreal",
-//    publishTo := Some(
-//      "Artifactory Realm" at "https://hyperreal.jfrog.io/artifactory/default-maven-virtual"
-//    ),
-//    credentials += Credentials(
-//      "Artifactory Realm",
-//      "hyperreal.jfrog.io",
-//      "edadma@gmail.com",
-//      "fW6N-hDhW*XPXhMt"
-//    ),
+    organization := "io.github.edadma",
     githubOwner := "edadma",
-    githubRepository := "char-reader",
-    mainClass := Some("xyz.hyperreal.char_reader.Main"),
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.5" % "test",
-    libraryDependencies += "xyz.hyperreal" %%% "cross-platform" % "0.1.0",
+    githubRepository := name.value,
+    mainClass := Some(s"${organization.value}.char_reader.Main"),
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.9" % "test",
+    libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.1.0",
     publishMavenStyle := true,
     Test / publishArtifact := false,
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
