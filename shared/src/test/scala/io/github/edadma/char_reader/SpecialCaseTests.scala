@@ -5,6 +5,26 @@ import org.scalatest.matchers.should.Matchers
 
 class SpecialCaseTests extends AnyFreeSpec with Matchers with Testing {
 
+  "initial space, 2 line, non-indentation mode" in {
+    noindent(" a\n") shouldBe
+    """|' ' (line 1, column 1):
+       | a
+       |^
+       |
+       |'a' (line 1, column 2):
+       | a
+       | ^
+       |
+       |'\n' (line 1, column 3):
+       | a
+       |  ^
+       |
+       |'EOI' (line 2, column 1):
+       |
+       |^
+       |""".trim.replace("!\n", "\n").stripMargin
+  }
+
   "indented text" in {
     text(
       """|1

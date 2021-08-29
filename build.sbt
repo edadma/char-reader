@@ -4,7 +4,7 @@ ThisBuild / versionScheme := Some("semver-spec")
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "char-reader",
-    version := "0.1.1",
+    version := "0.1.2",
     scalaVersion := "2.13.6",
     scalacOptions ++=
       Seq(

@@ -69,7 +69,7 @@ class CharReader private (input: LazyList[Char],
     else skipToEol(in.tail, count + 1)
 
   @scala.annotation.tailrec
-  private def skipSpace(in: Input, count: Int = 0): Either[(Input, Int), (Input, Int)] =
+  private def skipSpace(in: Input, count: Int = 0): Either[(Input, Int), (Input, Int)] = {
     if (in.isEmpty || in.head == '\n') Left(in, count)
     else if (in.head == ' ' && (!_textUntilDedent || count < level)) skipSpace(in.tail, count + 1)
     else if (!_textUntilDedent && matches(in, indentation.get._1)) {
@@ -77,11 +77,12 @@ class CharReader private (input: LazyList[Char],
 
       Left(r, c + count)
     } else Right(in, count)
+  }
 
   lazy val next: CharReader =
     if (ch == EOI)
       error("end of input")
-    else if (soi && ch == ' ') {
+    else if (soi && ch == ' ' && indentation.isDefined) {
       skipSpace(input) match {
         case Left((rest, count)) => newLine(rest, count + 1)
         case Right((rest, count)) =>

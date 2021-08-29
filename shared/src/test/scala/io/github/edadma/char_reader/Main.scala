@@ -2,7 +2,7 @@ package io.github.edadma.char_reader
 
 object Main extends App with Testing {
 
-  val s = "1\n2\n"
+  val s = " a\n"
 
   println(noindent(s))
 
