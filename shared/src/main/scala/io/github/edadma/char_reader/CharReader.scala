@@ -1,6 +1,6 @@
 package io.github.edadma.char_reader
 
-import xyz.hyperreal.cross_platform.readFile
+import io.github.edadma.cross_platform.readFile
 
 object CharReader {
   val EOI = '\u001A'
