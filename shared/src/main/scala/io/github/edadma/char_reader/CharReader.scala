@@ -16,8 +16,8 @@ object CharReader {
 
 class CharReader private (input: LazyList[Char],
                           start: LazyList[Char],
-                          line: Int,
-                          col: Int,
+                          val line: Int,
+                          val col: Int,
                           tabs: Int,
                           val prev: Option[Char],
                           indentation: Option[(String, String, String)],
