@@ -2,6 +2,8 @@ package io.github.edadma.char_reader
 
 import io.github.edadma.cross_platform.readFile
 
+import scala.annotation.tailrec
+
 object CharReader {
   val EOI = '\u001A'
   val INDENT = '\uE000'
@@ -56,23 +58,54 @@ class CharReader private (input: LazyList[Char],
     buf.toString
   }
 
-  @scala.annotation.tailrec
-  private def matches(in: Input, s: String, idx: Int = 0): Boolean =
-    if (s.isEmpty) false
-    else if (idx == s.length) true
-    else if (in.isEmpty || in.head != s.charAt(idx)) false
-    else matches(in.tail, s, idx + 1)
+  def matches(r: CharReader, s: String): Option[CharReader] = {
+    require(s != null && s.nonEmpty, "string being matched should not be empty or null")
 
-  @scala.annotation.tailrec
+    @tailrec
+    def matches(r: CharReader, s: LazyList[Char]): Option[CharReader] =
+      s match {
+        case head #:: tail =>
+          if (head == r.ch) matches(r.next, tail)
+          else None
+        case LazyList.empty => Some(r)
+      }
+
+    if (r.more) matches(r, s.to(LazyList))
+    else None
+  }
+
+  def consumeUpToDelim(r: CharReader, delim: String): Option[(String, CharReader)] = {
+    val buf: StringBuilder = new StringBuilder
+
+    @tailrec
+    def consumeUpToDelim(r: CharReader): Option[(String, CharReader)] = {
+      if (r.eoi) None
+      else {
+        matches(r, delim) match {
+          case Some(rest) => Some((buf.toString, rest))
+          case None =>
+            buf += r.ch
+            consumeUpToDelim(r.next)
+        }
+      }
+    }
+
+    consumeUpToDelim(r)
+  }
+
+  def matchDelimited(r: CharReader, start: String, end: String): Option[(String, CharReader)] =
+    matches(r, start) flatMap (rest => consumeUpToDelim(rest, end))
+
+  @tailrec
   private def skipToEol(in: Input, count: Int = 0): (Input, Int) =
     if (in.isEmpty || in.head == '\n') (in, count)
     else skipToEol(in.tail, count + 1)
 
-  @scala.annotation.tailrec
+  @tailrec
   private def skipSpace(in: Input, count: Int = 0): Either[(Input, Int), (Input, Int)] = {
     if (in.isEmpty || in.head == '\n') Left(in, count)
     else if (in.head == ' ' && (!_textUntilDedent || count < level)) skipSpace(in.tail, count + 1)
-    else if (!_textUntilDedent && matches(in, indentation.get._1)) {
+    else if (!_textUntilDedent && in.startsWith(indentation.get._1)) {
       val (r, c) = skipToEol(in)
 
       Left(r, c + count)
