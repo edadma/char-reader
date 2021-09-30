@@ -67,7 +67,7 @@ class CharReader private (input: LazyList[Char],
         case head #:: tail =>
           if (head == r.ch) matches(r.next, tail)
           else None
-        case LazyList.empty => Some(r)
+        case l if l == LazyList.empty => Some(r)
       }
 
     if (r.more) matches(r, s.to(LazyList))
