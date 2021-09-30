@@ -93,6 +93,7 @@ class CharReader private (input: LazyList[Char],
     consumeUpToDelim(this)
   }
 
+  // todo: r.error("unclosed tag")
   def matchDelimited(start: String, end: String): Option[(String, CharReader)] =
     matches(start) flatMap (_.consumeUpToDelim(end))
 
