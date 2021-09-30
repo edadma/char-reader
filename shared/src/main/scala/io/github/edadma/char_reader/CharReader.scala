@@ -58,7 +58,7 @@ class CharReader private (input: LazyList[Char],
     buf.toString
   }
 
-  def matches(r: CharReader, s: String): Option[CharReader] = {
+  def matches(s: String): Option[CharReader] = {
     require(s != null && s.nonEmpty, "string being matched should not be empty or null")
 
     @tailrec
@@ -70,18 +70,18 @@ class CharReader private (input: LazyList[Char],
         case l if l == LazyList.empty => Some(r)
       }
 
-    if (r.more) matches(r, s.to(LazyList))
+    if (more) matches(this, s.to(LazyList))
     else None
   }
 
-  def consumeUpToDelim(r: CharReader, delim: String): Option[(String, CharReader)] = {
+  def consumeUpToDelim(delim: String): Option[(String, CharReader)] = {
     val buf: StringBuilder = new StringBuilder
 
     @tailrec
     def consumeUpToDelim(r: CharReader): Option[(String, CharReader)] = {
       if (r.eoi) None
       else {
-        matches(r, delim) match {
+        r.matches(delim) match {
           case Some(rest) => Some((buf.toString, rest))
           case None =>
             buf += r.ch
@@ -90,11 +90,11 @@ class CharReader private (input: LazyList[Char],
       }
     }
 
-    consumeUpToDelim(r)
+    consumeUpToDelim(this)
   }
 
-  def matchDelimited(r: CharReader, start: String, end: String): Option[(String, CharReader)] =
-    matches(r, start) flatMap (rest => consumeUpToDelim(rest, end))
+  def matchDelimited(start: String, end: String): Option[(String, CharReader)] =
+    matches(start) flatMap (_.consumeUpToDelim(end))
 
   @tailrec
   private def skipToEol(in: Input, count: Int = 0): (Input, Int) =
