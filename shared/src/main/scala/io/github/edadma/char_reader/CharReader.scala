@@ -93,9 +93,11 @@ class CharReader private (input: LazyList[Char],
     consumeUpToDelim(this)
   }
 
-  // todo: r.error("unclosed tag")
-  def matchDelimited(start: String, end: String): Option[(String, CharReader)] =
-    matches(start) flatMap (_.consumeUpToDelim(end))
+  def matchDelimited(start: String, end: String): Option[Option[(String, CharReader)]] =
+    matches(start) match {
+      case Some(r) => r.consumeUpToDelim(end) map (Some(_))
+      case None    => Some(None)
+    }
 
   @tailrec
   private def skipToEol(in: Input, count: Int = 0): (Input, Int) =
