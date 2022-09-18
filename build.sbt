@@ -1,6 +1,8 @@
 ThisBuild / licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
 ThisBuild / versionScheme := Some("semver-spec")
 
+publish / skip := true
+
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
