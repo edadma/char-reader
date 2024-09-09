@@ -8,7 +8,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name := "char-reader",
     version := "0.1.11",
-    scalaVersion := "3.3.1",
+    scalaVersion := "3.5.0",
     scalacOptions ++=
       Seq(
         "-deprecation",
@@ -23,8 +23,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     githubOwner := "edadma",
     githubRepository := name.value,
     mainClass := Some(s"${organization.value}.char_reader.Main"),
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % "test",
-    libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.1.5",
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.19" % "test",
     publishMavenStyle := true,
     Test / publishArtifact := false,
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC"),
@@ -33,7 +32,6 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
   )
   .nativeSettings(
-    nativeLinkStubs := true,
   )
   .jsSettings(
     jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
