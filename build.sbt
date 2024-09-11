@@ -9,7 +9,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
     name := "char-reader",
-    version := "0.1.11",
+    version := "0.1.12",
     scalaVersion := "3.5.0",
     scalacOptions ++=
       Seq(
