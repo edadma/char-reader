@@ -16,16 +16,18 @@ object CharReader {
     fromString(readFile(file), tabs, indentation)
 }
 
-class CharReader private (input: LazyList[Char],
-                          start: LazyList[Char],
-                          val line: Int,
-                          val col: Int,
-                          tabs: Int,
-                          val prev: Option[Char],
-                          indentation: Option[(String, String, String)],
-                          indent: Int,
-                          level: Int,
-                          private var _textUntilDedent: Boolean) {
+class CharReader private (
+    input: LazyList[Char],
+    start: LazyList[Char],
+    val line: Int,
+    val col: Int,
+    tabs: Int,
+    val prev: Option[Char],
+    indentation: Option[(String, String, String)],
+    indent: Int,
+    level: Int,
+    private var _textUntilDedent: Boolean,
+) {
 
   import CharReader.{EOI, INDENT, DEDENT}
 
@@ -57,6 +59,11 @@ class CharReader private (input: LazyList[Char],
 
     buf.toString
   }
+
+  @tailrec
+  final def skipWhitespace: CharReader =
+    if ch.isWhitespace then next.skipWhitespace
+    else this
 
   def matches(s: String): Option[CharReader] = {
     require(s != null && s.nonEmpty, "string being matched should not be empty or null")
@@ -134,8 +141,10 @@ class CharReader private (input: LazyList[Char],
           case Right((rest, count)) =>
             if (indent > 0 && (count % indent != 0 || count > level + indent))
               newLine(rest, count + 1)
-                .error(s"expected indentation to be ${if (count > level) level + indent
-                else level - indent} spaces, not $count spaces")
+                .error(s"expected indentation to be ${
+                    if (count > level) level + indent
+                    else level - indent
+                  } spaces, not $count spaces")
             else {
               val in =
                 if (count > level) INDENT +: rest
@@ -146,23 +155,26 @@ class CharReader private (input: LazyList[Char],
 
               newLine(in, count + 1, if (level == 0) count else indent, count)
             }
-        } else newLine(input.tail)
+        }
+      else newLine(input.tail)
     else if (indentation.isDefined && input.tail.isEmpty && level > 0)
       nextChar(LazyList.fill(level / indent)(DEDENT), 0)
     else
       nextChar(input.tail)
 
   private def nextChar(in: Input, _level: Int = level): CharReader =
-    new CharReader(in,
-                   start,
-                   line,
-                   if (ch == INDENT || ch == DEDENT) col else col + 1,
-                   tabs,
-                   Some(ch),
-                   indentation,
-                   indent,
-                   _level,
-                   _textUntilDedent)
+    new CharReader(
+      in,
+      start,
+      line,
+      if (ch == INDENT || ch == DEDENT) col else col + 1,
+      tabs,
+      Some(ch),
+      indentation,
+      indent,
+      _level,
+      _textUntilDedent,
+    )
 
   private def newLine(in: Input, _col: Int = 1, _indent: Int = indent, _level: Int = level): CharReader =
     new CharReader(in, input.tail, line + 1, _col, tabs, Some(ch), indentation, _indent, _level, _textUntilDedent)
@@ -229,12 +241,12 @@ class CharReader private (input: LazyList[Char],
 
   override def toString =
     s"<$line, $col, ${ch match {
-      case INDENT                      => "INDENT"
-      case DEDENT                      => "DEDENT"
-      case EOI                         => "EOI"
-      case '\n'                        => "\\n"
-      case ' '                         => "' '"
-      case _ if ch >= ' ' && ch <= '~' => ch.toString
-      case _                           => "?"
-    }}>"
+        case INDENT                      => "INDENT"
+        case DEDENT                      => "DEDENT"
+        case EOI                         => "EOI"
+        case '\n'                        => "\\n"
+        case ' '                         => "' '"
+        case _ if ch >= ' ' && ch <= '~' => ch.toString
+        case _                           => "?"
+      }}>"
 }

@@ -9,8 +9,8 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
     name := "char-reader",
-    version := "0.1.12",
-    scalaVersion := "3.5.0",
+    version := "0.1.13",
+    scalaVersion := "3.5.1",
     scalacOptions ++=
       Seq(
         "-deprecation",
@@ -37,7 +37,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .nativeSettings(
   )
   .jsSettings(
-    jsEnv := new NodeJSEnv(NodeJSEnv.Config().withExecutable("/home/ed/.nvm/versions/node/v18.20.4/bin/node")),
+    jsEnv := new NodeJSEnv(NodeJSEnv.Config().withExecutable("/home/ed/.nvm/versions/node/v18.19.0/bin/node")),
 //    Test / scalaJSUseMainModuleInitializer := true,
 //    Test / scalaJSUseTestModuleInitializer := false,
     Test / scalaJSUseMainModuleInitializer := false,
