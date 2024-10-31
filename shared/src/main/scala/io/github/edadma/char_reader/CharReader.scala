@@ -81,28 +81,39 @@ class CharReader private (
     else None
   }
 
-  def consumeUpToDelim(delim: String): Option[(String, CharReader)] = {
+  def consume(cond: CharReader => Boolean): (String, CharReader) =
     val buf: StringBuilder = new StringBuilder
 
     @tailrec
-    def consumeUpToDelim(r: CharReader): Option[(String, CharReader)] = {
+    def consume(r: CharReader): (String, CharReader) =
+      if (r.eoi || cond(r)) (buf.toString, r)
+      else consume(r.next)
+
+    consume(this)
+  end consume
+
+  def consumePastDelimiter(delim: String): Option[(String, CharReader)] = {
+    val buf: StringBuilder = new StringBuilder
+
+    @tailrec
+    def consumePastDelimiter(r: CharReader): Option[(String, CharReader)] = {
       if (r.eoi) None
       else {
         r.matches(delim) match {
           case Some(rest) => Some((buf.toString, rest))
           case None =>
             buf += r.ch
-            consumeUpToDelim(r.next)
+            consumePastDelimiter(r.next)
         }
       }
     }
 
-    consumeUpToDelim(this)
+    consumePastDelimiter(this)
   }
 
   def matchDelimited(start: String, end: String): Option[Option[(String, CharReader)]] =
     matches(start) match {
-      case Some(r) => r.consumeUpToDelim(end) map (Some(_))
+      case Some(r) => r.consumePastDelimiter(end) map (Some(_))
       case None    => Some(None)
     }
 

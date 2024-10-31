@@ -9,8 +9,8 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
     name := "char-reader",
-    version := "0.1.13",
-    scalaVersion := "3.5.1",
+    version := "0.1.14",
+    scalaVersion := "3.5.2",
     scalacOptions ++=
       Seq(
         "-deprecation",
