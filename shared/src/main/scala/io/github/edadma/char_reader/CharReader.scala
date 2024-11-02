@@ -87,7 +87,9 @@ class CharReader private (
     @tailrec
     def consume(r: CharReader): (String, CharReader) =
       if (r.eoi || cond(r)) (buf.toString, r)
-      else consume(r.next)
+      else
+        buf += r.ch
+        consume(r.next)
 
     consume(this)
   end consume
