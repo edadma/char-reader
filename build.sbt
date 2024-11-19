@@ -1,5 +1,3 @@
-import org.scalajs.jsenv.nodejs.NodeJSEnv
-
 ThisBuild / licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
 ThisBuild / versionScheme := Some("semver-spec")
 
@@ -9,7 +7,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
     name := "char-reader",
-    version := "0.1.15",
+    version := "0.1.16",
     scalaVersion := "3.5.2",
     scalacOptions ++=
       Seq(
@@ -26,7 +24,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     githubRepository := name.value,
     mainClass := Some(s"${organization.value}.char_reader.Main"),
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.19" % "test",
-    libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.1.6",
+    libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.0.3",
     publishMavenStyle := true,
     Test / publishArtifact := false,
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC"),
@@ -37,7 +35,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .nativeSettings(
   )
   .jsSettings(
-    jsEnv := new NodeJSEnv(NodeJSEnv.Config().withExecutable("/home/ed/.nvm/versions/node/v18.19.0/bin/node")),
+    jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
 //    Test / scalaJSUseMainModuleInitializer := true,
 //    Test / scalaJSUseTestModuleInitializer := false,
     Test / scalaJSUseMainModuleInitializer := false,

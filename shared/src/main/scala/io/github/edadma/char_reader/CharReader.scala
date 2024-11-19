@@ -3,6 +3,7 @@ package io.github.edadma.char_reader
 import io.github.edadma.cross_platform.readFile
 
 import scala.annotation.tailrec
+import scala.compiletime.uninitialized
 
 object CharReader {
   val EOI = '\u001A'
@@ -195,7 +196,7 @@ class CharReader private (
   def iterator: Iterator[CharReader] =
     new Iterator[CharReader] {
       private var done = false
-      private var r: CharReader = _
+      private var r: CharReader = uninitialized
 
       def hasNext: Boolean = !done
 
