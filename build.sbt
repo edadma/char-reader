@@ -1,11 +1,11 @@
 ThisBuild / licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
 ThisBuild / versionScheme := Some("semver-spec")
 ThisBuild / evictionErrorLevel := Level.Warn
-ThisBuild / scalaVersion := "3.6.4"
+ThisBuild / scalaVersion := "3.7.0"
 ThisBuild / organization := "io.github.edadma"
 ThisBuild / organizationName := "edadma"
 ThisBuild / organizationHomepage := Some(url("https://github.com/edadma"))
-ThisBuild / version := "0.1.19"
+ThisBuild / version := "0.1.20"
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 
