@@ -1,70 +1,190 @@
-# module-name  
+# char-reader
 
-**Badges** 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.edadma/char-reader_3)
+![GitHub](https://img.shields.io/github/license/edadma/char-reader)
+![Scala Version](https://img.shields.io/badge/Scala-3.7.0-blue.svg)
+![ScalaJS Version](https://img.shields.io/badge/Scala.js-1.19.0-blue.svg)
+![Scala Native Version](https://img.shields.io/badge/Scala_Native-5.7-blue.svg)
 
-Optional badges such as npm version, test and build coverage, and so on.
-
-**Summary** 
-
-One- or two-sentence description of what the module does.
+A Scala library for intelligent character-by-character reading with automatic indentation tracking.
 
 ## Overview
 
-Optionally, include a section of one or two paragraphs with more high-level 
-information on what the module does, what problems it solves, why one would 
-use it and how.  Don't just repeat what's in the summary.
+`char-reader` provides a powerful abstraction for parsing text with significant whitespace. It automatically generates `INDENT` and `DEDENT` tokens when indentation levels change, making it ideal for parsing languages like Python, YAML, or any custom DSL that uses indentation for structure.
+
+Key features include:
+- **Automatic indentation tracking** with configurable indentation styles
+- **Precise position tracking** (line and column numbers)
+- **Cross-platform support** (JVM, JavaScript via Scala.js, and Native)
+- **Rich error reporting** with contextual information
+- **Flexible iteration** over characters with lookahead capabilities
+- **Comment line detection** and handling
 
 ## Installation
 
+Add the dependency to your `build.sbt`:
+
+```scala
+libraryDependencies += "io.github.edadma" %%% "char-reader" % "0.1.20"
 ```
-$ npm install module-name
+
+For cross-platform projects, use `%%%` to automatically select the appropriate artifact.
+
+## Basic Usage
+
+### Simple Character Reading
+
+```scala
+import io.github.edadma.char_reader.CharReader
+
+// Read from string without indentation tracking
+val reader = CharReader.fromString("Hello\nWorld")
+while (!reader.eoi) {
+  println(s"Char: '${reader.ch}' at line ${reader.line}, column ${reader.col}")
+  reader = reader.next
+}
 ```
 
-## Basic use
+### Indentation-Aware Reading
 
-General description of how to use the module with basic example.
+```scala
+import io.github.edadma.char_reader.CharReader
 
-## API 
+val text = """
+|1
+| a
+|  b
+| c
+|2
+""".stripMargin
 
-Full API documentation.
+// Configure comment syntax (prefix, middle, suffix)
+val reader = CharReader.fromString(text, indentation = Some(("#", "", "")))
 
-## Examples
+reader.iterator.foreach { r =>
+  r.ch match {
+    case CharReader.INDENT => println("Indentation increased")
+    case CharReader.DEDENT => println("Indentation decreased")
+    case CharReader.EOI    => println("End of input")
+    case '\n'              => println("Newline")
+    case c                 => println(s"Character: '$c'")
+  }
+}
+```
 
-Additional examples here.
+### Reading from File
 
-## Tests
+```scala
+val reader = CharReader.fromFile("input.txt", indentation = Some(("#", "", "")))
+```
 
-What tests are included and how to run them. 
+## Advanced Features
+
+### Pattern Matching
+
+```scala
+val reader = CharReader.fromString("function hello() {")
+
+reader.matches("function") match {
+  case Some(nextReader) => println("Found 'function' keyword")
+  case None => println("Pattern not found")
+}
+```
+
+### Consuming Text
+
+```scala
+// Consume until whitespace
+val (consumed, rest) = reader.consume(_.ch.isWhitespace)
+println(s"Consumed: '$consumed'")
+
+// Consume past a delimiter
+reader.consumePastDelimiter("*/") match {
+  case Some((content, rest)) => println(s"Comment content: '$content'")
+  case None => println("Delimiter not found")
+}
+```
+
+### Error Reporting
+
+```scala
+val reader = CharReader.fromString("error here")
+reader.error("Unexpected token") // Throws with context
+```
+
+Output:
+```
+Unexpected token (line 1, column 1):
+error here
+^
+```
+
+## Special Characters
+
+- `CharReader.EOI`: End of Input
+- `CharReader.INDENT`: Indentation level increased
+- `CharReader.DEDENT`: Indentation level decreased
+
+## Configuration
+
+### Tab Width
+
+```scala
+CharReader.fromString(text, tabs = 4) // Default tab width
+```
+
+### Indentation Settings
+
+```scala
+// Configure comment syntax: (prefix, middle, suffix)
+val pythonStyle = Some(("#", "", ""))
+val cStyle = Some(("/*", "", "*/"))
+val reader = CharReader.fromString(text, indentation = pythonStyle)
+```
+
+## Building
+
+This project uses SBT with cross-compilation:
+
+```bash
+# Test all platforms
+sbt test
+
+# Test specific platform
+sbt charReaderJVM/test
+sbt charReaderJS/test
+sbt charReaderNative/test
+
+# Publish
+sbt publishSigned
+```
 
 ## Contributing
 
-This project welcomes contributions from the community. Contributions are
-accepted using GitHub pull requests; for more information, see 
-[GitHub documentation - Creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+This project welcomes contributions from the community. Contributions are accepted using GitHub pull requests.
 
-For a good pull request, we ask you provide the following:
+For a good pull request, please provide:
 
-1. Include a clear description of your pull request in the description
-   with the basic "what" and "why"s for the request.
-2. The tests should pass as best as you can. GitHub will automatically run
-   the tests as well, to act as a safety net.
-3. The pull request should include tests for the change. A new feature should
-   have tests for the new feature and bug fixes should include a test that fails
-   without the corresponding code change and passes after they are applied.
-   The command `npm run test-cov` will generate a `coverage/` folder that
-   contains HTML pages of the code coverage, to better understand if everything
-   you're adding is being tested.
-4. If the pull request is a new feature, please include appropriate documentation 
-   in the `README.md` file as well.
-5. To help ensure that your code is similar in style to the existing code,
-   run the command `npm run lint` and fix any displayed issues.
+1. **Clear description**: Include the "what" and "why" of your changes
+2. **Passing tests**: Ensure existing tests pass and add new tests for new features
+3. **Test coverage**: Use `sbt coverage test` to generate coverage reports
+4. **Documentation**: Update README if adding new features
+5. **Code style**: Run `scalafmt` to maintain consistent formatting
 
-## Contributors
+## Testing
 
-Names of module "owners" (lead developers) and other developers who 
-have contributed.
+Run the test suite:
+
+```bash
+sbt clean test
+```
+
+Generate coverage report:
+
+```bash
+sbt clean coverage test coverageReport
+```
 
 ## License
 
-Link to the license, with a short description of what it is, 
-e.g. "MIT" or whatever.
+This project is licensed under the [ISC License](https://opensource.org/licenses/ISC).
