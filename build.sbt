@@ -62,17 +62,6 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
   .settings(
     name := "char-reader",
-    scalacOptions ++=
-      Seq(
-        "-deprecation",
-        "-feature",
-        "-unchecked",
-        "-language:postfixOps",
-        "-language:implicitConversions",
-        "-language:existentials",
-        "-language:dynamics",
-      ),
-    organization := "io.github.edadma",
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.19" % "test",
     libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.0.2",
     publishMavenStyle := true,
