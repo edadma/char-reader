@@ -98,6 +98,7 @@ lazy val root = project
   .in(file("."))
   .aggregate(char_reader.js, char_reader.jvm, char_reader.native)
   .settings(
+    name := "char-reader",
     publish / skip := true,
     publishLocal / skip := true,
   )
