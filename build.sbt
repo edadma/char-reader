@@ -5,7 +5,7 @@ ThisBuild / scalaVersion           := "3.7.2"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.1.22"
+ThisBuild / version                := "0.1.23"
 ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
 ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true).withChecksums(Vector.empty)
@@ -17,8 +17,8 @@ ThisBuild / sonatypeProfileName := "io.github.edadma"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
-    url("https://github.com/edadma/char-reader"),
-    "scm:git@github.com:edadma/char-reader.git",
+    url("https://github.com/edadma/char_reader"),
+    "scm:git@github.com:edadma/char_reader.git",
   ),
 )
 ThisBuild / developers := List(
@@ -30,7 +30,7 @@ ThisBuild / developers := List(
   ),
 )
 
-ThisBuild / homepage := Some(url("https://github.com/edadma/char-reader"))
+ThisBuild / homepage := Some(url("https://github.com/edadma/char_reader"))
 
 ThisBuild / publishTo := {
   val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
@@ -41,7 +41,7 @@ ThisBuild / publishTo := {
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
-    name := "char-reader",
+    name := "char_reader",
     scalacOptions ++=
       Seq(
         "-deprecation",
@@ -76,7 +76,7 @@ lazy val root = project
   .in(file("."))
   .aggregate(char_reader.js, char_reader.jvm, char_reader.native)
   .settings(
-    name                := "char-reader",
+    name                := "char_reader",
     publish / skip      := true,
     publishLocal / skip := true,
   )
