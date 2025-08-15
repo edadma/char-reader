@@ -2,9 +2,9 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.edadma/char-reader_3)
 ![GitHub](https://img.shields.io/github/license/edadma/char-reader)
-![Scala Version](https://img.shields.io/badge/Scala-3.7.0-blue.svg)
+![Scala Version](https://img.shields.io/badge/Scala-3.7.2-blue.svg)
 ![ScalaJS Version](https://img.shields.io/badge/Scala.js-1.19.0-blue.svg)
-![Scala Native Version](https://img.shields.io/badge/Scala_Native-5.7-blue.svg)
+![Scala Native Version](https://img.shields.io/badge/Scala_Native-0.5.8-blue.svg)
 
 A Scala library for intelligent character-by-character reading with automatic indentation tracking.
 
@@ -25,7 +25,7 @@ Key features include:
 Add the dependency to your `build.sbt`:
 
 ```scala
-libraryDependencies += "io.github.edadma" %%% "char-reader" % "0.1.20"
+libraryDependencies += "io.github.edadma" %%% "char-reader" % "0.1.22"
 ```
 
 For cross-platform projects, use `%%%` to automatically select the appropriate artifact.

@@ -1,11 +1,11 @@
 ThisBuild / licenses += "ISC"      -> url("https://opensource.org/licenses/ISC")
 ThisBuild / versionScheme          := Some("semver-spec")
 ThisBuild / evictionErrorLevel     := Level.Warn
-ThisBuild / scalaVersion           := "3.7.1"
+ThisBuild / scalaVersion           := "3.7.2"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.1.21"
+ThisBuild / version                := "0.1.22"
 ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
 ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true).withChecksums(Vector.empty)
@@ -55,7 +55,7 @@ lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     publishMavenStyle                          := true,
     Test / publishArtifact                     := false,
     libraryDependencies += "org.scalatest"    %%% "scalatest"      % "3.2.19" % "test",
-    libraryDependencies += "io.github.edadma" %%% "cross-platform" % "0.0.6",
+    libraryDependencies += "io.github.edadma" %%% "cross_platform" % "0.0.14",
   )
   .jvmSettings(
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
