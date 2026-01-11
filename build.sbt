@@ -1,12 +1,14 @@
-ThisBuild / licenses += "ISC"      -> url("https://opensource.org/licenses/ISC")
+import xerial.sbt.Sonatype.sonatypeCentralHost
+
+ThisBuild / licenses               := Seq("ISC" -> url("https://opensource.org/licenses/ISC"))
 ThisBuild / versionScheme          := Some("semver-spec")
 ThisBuild / evictionErrorLevel     := Level.Warn
-ThisBuild / scalaVersion           := "3.7.2"
+ThisBuild / scalaVersion           := "3.7.4"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.1.23"
-ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
+ThisBuild / version                := "0.1.24"
+ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true).withChecksums(Vector.empty)
 ThisBuild / resolvers += Resolver.mavenLocal
@@ -30,13 +32,10 @@ ThisBuild / developers := List(
   ),
 )
 
-ThisBuild / homepage := Some(url("https://github.com/edadma/char_reader"))
+ThisBuild / homepage    := Some(url("https://github.com/edadma/char_reader"))
+ThisBuild / description := "A character reader library for Scala with position tracking and error reporting"
 
-ThisBuild / publishTo := {
-  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
-  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
-  else localStaging.value
-}
+ThisBuild / publishTo := sonatypePublishToBundle.value
 
 lazy val char_reader = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))

@@ -10,8 +10,12 @@ object CharReader {
   val INDENT = '\uE000'
   val DEDENT = '\uE001'
 
-  def fromString(s: String, tabs: Int = 4, indentation: Option[(String, String, String)] = None) =
-    new CharReader(s to LazyList, tabs, indentation)
+  def fromString(s: String, tabs: Int = 4, indentation: Option[(String, String, String)] = None) = {
+    val chars = s to LazyList
+    // Skip BOM (Byte Order Mark) if present
+    val input = if (chars.headOption.contains('\uFEFF')) chars.tail else chars
+    new CharReader(input, tabs, indentation)
+  }
 
   def fromFile(file: String, tabs: Int = 4, indentation: Option[(String, String, String)] = None): CharReader =
     fromString(readFile(file), tabs, indentation)
